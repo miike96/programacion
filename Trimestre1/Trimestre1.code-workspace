@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "Relacion1",
+			"path": "Relacion1"
+		},
+		{
+			"path": "Relacion2"
+		}
+	],
+	"settings": {
+		"java.project.sourcePaths": [
+			"src"
+		],
+		"java.project.outputPath": "bin",
+		"java.project.referencedLibraries": [
+			"lib/**/*.jar"
+		],
+		"java.dependency.packagePresentation": "hierarchical"
+	}
+}

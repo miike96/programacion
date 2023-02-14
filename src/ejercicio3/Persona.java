@@ -14,6 +14,11 @@ public abstract class Persona {
      */
 
     public Persona(String nombre, String textoMensaje, LocalDate fechaMensaje) {
+
+        if (nombre == null || nombre.trim().length() == 0) {
+            throw new IllegalArgumentException("El nombre no puede ser nulo o vacío");
+        }
+
         this.nombre = nombre;
         this.textoMensaje = textoMensaje;
         this.fechaMensaje = fechaMensaje;

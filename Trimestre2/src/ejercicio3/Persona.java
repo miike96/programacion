@@ -11,6 +11,7 @@ public abstract class Persona {
     private String nombre;
     private String mensajeTexto;
     private LocalDateTime fechaMensaje;
+    private LinkedList<Persona> mensajes;
 
     /**
      * Constructor con parametros de la clase padre en la que

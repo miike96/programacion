@@ -1,0 +1,79 @@
+package trimestre3;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+
+public class Ejercicio6 {
+
+    private static Scanner teclado = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        /*
+         * Crea un programa que acepte un nombre de empleado y muestre todas las ventas
+         * realizadas por este, en una línea que indique a qué cliente y el monto total de la
+         * operación
+         */
+        try (Connection con = DataBaseConnection.getInstance().getCon();
+             PreparedStatement consulta = con.prepareStatement("SELECT * from employees where firstName = ? AND lastName = ?");
+             PreparedStatement consulta2 = con.prepareStatement("SELECT o.orderNumber, c.customerName, " +
+                     "SUM(od.quantityOrdered * od.priceEach) as monto " +
+                        "FROM orders o, customers c, orderdetails od, employees e " +
+                        "WHERE o.customerNumber = c.customerNumber " +
+                        "AND e.employeeNumber = c.salesRepEmployeeNumber " +
+                        "AND o.orderNumber = od.orderNumber " +
+                        "AND e.firstName = ? " +
+                        "AND e.lastName = ? " +
+                        "GROUP BY o.orderNumber " +
+                        "ORDER BY c.customerName")) {
+            String nombre;
+            String apellido;
+            do {
+                System.out.println("Introduce el nombre del empleado: ");
+                try {
+                    nombre = teclado.next();
+                    if (nombre.length() == 0) {
+                        throw new IllegalArgumentException();
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("El nombre no puede estar vacío.");
+                    nombre = "";
+                }
+            } while (nombre.length() == 0);
+            do {
+                System.out.println("Introduce el apellido del empleado: ");
+                try {
+                    apellido = teclado.next();
+                    if (apellido.length() == 0) {
+                        throw new IllegalArgumentException();
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("El apellido no puede estar vacío.");
+                    apellido = "";
+                }
+            } while (apellido.length() == 0);
+            consulta.setString(1, nombre);
+            consulta.setString(2, apellido);
+            ResultSet resultadoComprobarNombre = consulta.executeQuery();
+            if (resultadoComprobarNombre.next()) {
+                consulta2.setString(1, nombre);
+                consulta2.setString(2, apellido);
+                ResultSet resultadoVentas = consulta2.executeQuery();
+                while (resultadoVentas.next()) {
+//                    System.out.println("El empleado " + nombre + " " + apellido + " ha vendido al cliente " +
+//                            resultadoVentas.getString("customerName") + " por un monto de " +
+//                            resultadoVentas.getString("monto") + "€");
+                    // Para que quede más bonito
+                    System.out.printf("%8d | %-30s | %10.2f €\n", resultadoVentas.getInt("orderNumber"),
+                            resultadoVentas.getString("customerName"), resultadoVentas.getDouble("monto"));
+                }
+            } else {
+                System.out.println("No existe ningún empleado con ese nombre.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

@@ -11,11 +11,7 @@ public class Ejercicio6 {
     private static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
-        /*
-         * Crea un programa que acepte un nombre de empleado y muestre todas las ventas
-         * realizadas por este, en una línea que indique a qué cliente y el monto total de la
-         * operación
-         */
+        
         try (Connection con = DataBaseConnection.getInstance().getCon();
              PreparedStatement consulta = con.prepareStatement("SELECT * from employees where firstName = ? AND lastName = ?");
              PreparedStatement consulta2 = con.prepareStatement("SELECT o.orderNumber, c.customerName, " +
